@@ -17,9 +17,9 @@ impl Data {
 
     pub fn set_flatlander(&mut self, x: i32, h: i32) -> Result<(), ShadowError> {
         if x < 0 || x > 310000 {
-            return Err(ShadowError::InvalidPositionOrHeight { value: x });
+            return Err(ShadowError::InvalidPositionOrHeightError { value: x });
         } else if h < 1 || h > 1000 {
-            return Err(ShadowError::InvalidPositionOrHeight { value: h });
+            return Err(ShadowError::InvalidPositionOrHeightError { value: h });
         }
 
         let flatlander = Flatlander::new(x, h);
