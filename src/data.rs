@@ -1,7 +1,7 @@
-use crate::flatlanders::Flatlanders;
+use crate::flatlander::Flatlander;
 
 #[derive(Debug)]
 pub struct Data {
     pub degrees: i32,
-    pub flatlanders: Vec<Flatlanders>,
+    pub flatlanders: Vec<Flatlander>,
 }
