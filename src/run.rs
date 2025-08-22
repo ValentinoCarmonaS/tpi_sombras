@@ -1,0 +1,16 @@
+use crate::shadow_error::ShadowError;
+use crate::read_input::read_input;
+
+
+pub fn run() -> Result<f64, ShadowError> {
+    // Read the input from stdin
+    let input_list = read_input()?;
+
+    // Sort the flatlanders by x
+    input_list.sort()?;
+
+    // Calculate the total shadow length;
+    let ans = input_list.calculate_total_shadow_length()?;
+
+    Ok(ans);
+}
