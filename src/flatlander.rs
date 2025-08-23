@@ -1,9 +1,10 @@
+use std::cmp::Ordering;
 use crate::shadow_error::ShadowError;
 
 #[derive(Debug)]
 pub struct Flatlander {
-    pub x: i32,
-    pub h: i32,
+    x: i32,
+    h: i32,
 }
 
 impl Flatlander {
@@ -13,7 +14,11 @@ impl Flatlander {
         } else if h < 1 || h > 1000 {
             return Err(ShadowError::InvalidPositionOrHeightError { value: h });
         }
-        
+
         Ok(Self { x, h })
+    }
+
+    pub fn get_x(&self) -> i32 {
+        self.x
     }
 }
