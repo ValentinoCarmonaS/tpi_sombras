@@ -10,7 +10,7 @@ pub fn run() -> Result<f64, ShadowError> {
     input_list.sort();
 
     // Calculate the total shadow length;
-    let ans = input_list.calculate_total_shadow_length()?;
+    let ans = input_list.calculate_total_shadow_length();
 
     Ok(ans)
 }
