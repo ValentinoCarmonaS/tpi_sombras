@@ -45,7 +45,7 @@ impl Data {
         let mut ans = 0.0;
         let mut current_start = -1.0;
         let mut current_end = -1.0;
-        
+
         for flatlander in self.flatlanders {
             let x = flatlander.get_x() as f64;
             let l = x + flatlander.calculate_shadow_length(tan);
@@ -61,7 +61,7 @@ impl Data {
             }
         }
 
-        ans +current_end - current_start
+        ans + current_end - current_start
     }
 
     #[allow(dead_code)]
@@ -73,6 +73,13 @@ impl Data {
     pub fn get_flatlanders(&self) -> &Vec<Flatlander> {
         &self.flatlanders
     }
+}
+
+#[test]
+fn test_new() {
+    let data = Data::new();
+    assert_eq!(data.get_theta(), 0);
+    assert!(data.get_flatlanders().is_empty());
 }
 
 #[test]
@@ -93,12 +100,28 @@ fn test_set_degrees() {
 }
 
 #[test]
-fn test_set_degrees_error() {
+fn test_set_degrees_error_less_than_10() {
     let mut data = Data::new();
-    let theta = 0;
+    let theta = 9;
     match data.set_degrees(theta) {
-        Ok(_) => assert!(false, "Error in set degrees"),
-        Err(_) => assert!(true),
+        Ok(_) => assert!(false, "Should have returned an error"),
+        Err(e) => match e {
+            ShadowError::InvalidAngleError { value } => assert_eq!(value, theta),
+            _ => assert!(false, "Incorrect error type"),
+        },
+    }
+}
+
+#[test]
+fn test_set_degrees_error_greater_than_80() {
+    let mut data = Data::new();
+    let theta = 81;
+    match data.set_degrees(theta) {
+        Ok(_) => assert!(false, "Should have returned an error"),
+        Err(e) => match e {
+            ShadowError::InvalidAngleError { value } => assert_eq!(value, theta),
+            _ => assert!(false, "Incorrect error type"),
+        },
     }
 }
 
@@ -126,23 +149,100 @@ fn test_set_flatlander() {
 }
 
 #[test]
-fn test01_calculate_total_shadow_length() {
+fn test_set_flatlander_error() {
     let mut data = Data::new();
-    match data.set_degrees(45) {
-        Ok(_) => (),
-        Err(_) => return assert!(false, "Error in set degrees"),
+    let x = -1;
+    let h = 10;
+
+    match data.set_flatlander(x, h) {
+        Ok(_) => assert!(false, "Should have returned an error"),
+        Err(e) => match e {
+            ShadowError::InvalidPositionOrHeightError { value } => assert_eq!(value, x),
+            _ => assert!(false, "Incorrect error type"),
+        },
     }
-    match data.set_flatlander(0, 10) {
-        Ok(_) => (),
-        Err(_) => return assert!(false, "Error in set flatlander"),
+}
+
+#[test]
+fn test_sort() {
+    let mut data = Data::new();
+    if let Err(_) = data.set_flatlander(10, 10) {
+        assert!(false, "Should not fail")
     }
-    match data.set_flatlander(5, 10) {
-        Ok(_) => (),
-        Err(_) => return assert!(false, "Error in set flatlander"),
+    if let Err(_) = data.set_flatlander(0, 10) {
+        assert!(false, "Should not fail")
+    }
+    if let Err(_) = data.set_flatlander(5, 10) {
+        assert!(false, "Should not fail")
+    }
+
+    data.sort();
+
+    assert_eq!(data.get_flatlanders()[0].get_x(), 0);
+    assert_eq!(data.get_flatlanders()[1].get_x(), 5);
+    assert_eq!(data.get_flatlanders()[2].get_x(), 10);
+}
+
+#[test]
+fn test_get_flatlanders() {
+    let mut data = Data::new();
+    if let Err(_) = data.set_flatlander(10, 10) {
+        assert!(false, "Should not fail")
+    }
+    assert_eq!(data.get_flatlanders().len(), 1);
+}
+
+#[test]
+fn test_calculate_total_shadow_length_no_flatlanders() {
+    let data = Data::new();
+    let epsilon = 1e-4;
+    let expected = 0.0;
+    let actual = data.calculate_total_shadow_length();
+    assert!(
+        (expected - actual).abs() < epsilon,
+        "Error, expected: {}, got: {}",
+        expected,
+        actual
+    );
+}
+
+#[test]
+fn test_calculate_total_shadow_length_one_flatlander() {
+    let mut data = Data::new();
+    if let Err(_) = data.set_degrees(45) {
+        assert!(false, "Should not fail")
+    }
+    if let Err(_) = data.set_flatlander(0, 10) {
+        assert!(false, "Should not fail")
     }
 
     let epsilon = 1e-4;
-    let expected = 15.0000000000000;
+    let expected = 10.0;
+    let actual = data.calculate_total_shadow_length();
+    assert!(
+        (expected - actual).abs() < epsilon,
+        "Error, expected: {}, got: {}",
+        expected,
+        actual
+    );
+}
+
+#[test]
+fn test01_calculate_total_shadow_length() {
+    let mut data = Data::new();
+    if let Err(_) = data.set_degrees(45) {
+        assert!(false, "Should not fail")
+    }
+    if let Err(_) = data.set_flatlander(0, 10) {
+        assert!(false, "Should not fail")
+    }
+    if let Err(_) = data.set_flatlander(5, 10) {
+        assert!(false, "Should not fail")
+    }
+
+    data.sort();
+    let epsilon = 1e-4;
+    let expected = 15.0;
     let actual = data.calculate_total_shadow_length();
 
     assert!(
@@ -156,24 +256,20 @@ fn test01_calculate_total_shadow_length() {
 #[test]
 fn test02_calculate_total_shadow_length() {
     let mut data = Data::new();
-    match data.set_degrees(30) {
-        Ok(_) => (),
-        Err(_) => return assert!(false, "Error in set degrees"),
+    if let Err(_) = data.set_degrees(30) {
+        assert!(false, "Should not fail")
     }
-    match data.set_flatlander(0, 100) {
-        Ok(_) => (),
-        Err(_) => return assert!(false, "Error in set flatlander"),
+    if let Err(_) = data.set_flatlander(0, 100) {
+        assert!(false, "Should not fail")
     }
-    match data.set_flatlander(50, 150) {
-        Ok(_) => (),
-        Err(_) => return assert!(false, "Error in set flatlander"),
+    if let Err(_) = data.set_flatlander(50, 150) {
+        assert!(false, "Should not fail")
     }
-    
-    match data.set_flatlander(100, 200) {
-        Ok(_) => (),
-        Err(_) => return assert!(false, "Error in set flatlander"),
+    if let Err(_) = data.set_flatlander(100, 200) {
+        assert!(false, "Should not fail")
     }
 
+    data.sort();
     let epsilon = 1e-4;
     let expected = 446.4101615137755;
     let actual = data.calculate_total_shadow_length();
@@ -189,25 +285,22 @@ fn test02_calculate_total_shadow_length() {
 #[test]
 fn test03_calculate_total_shadow_length() {
     let mut data = Data::new();
-    match data.set_degrees(45) {
-        Ok(_) => (),
-        Err(_) => return assert!(false, "Error in set degrees"),
+    if let Err(_) = data.set_degrees(45) {
+        assert!(false, "Should not fail")
     }
-    match data.set_flatlander(0, 100) {
-        Ok(_) => (),
-        Err(_) => return assert!(false, "Error in set flatlander"),
+    if let Err(_) = data.set_flatlander(0, 100) {
+        assert!(false, "Should not fail")
     }
-    match data.set_flatlander(50, 150) {
-        Ok(_) => (),
-        Err(_) => return assert!(false, "Error in set flatlander"),
+    if let Err(_) = data.set_flatlander(50, 150) {
+        assert!(false, "Should not fail")
     }
-    match data.set_flatlander(100, 200) {
-        Ok(_) => (),
-        Err(_) => return assert!(false, "Error in set flatlander"),
+    if let Err(_) = data.set_flatlander(100, 200) {
+        assert!(false, "Should not fail")
     }
 
+    data.sort();
     let epsilon = 1e-4;
-    let expected = 300.00000000000006;
+    let expected = 300.0;
     let actual = data.calculate_total_shadow_length();
 
     assert!(
