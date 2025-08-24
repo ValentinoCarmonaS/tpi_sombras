@@ -5,23 +5,23 @@ use std::io::{self, BufRead};
 /// Returns error if the line is invalid or cannot be parsed.
 pub fn read_line(line: &str) -> Result<(i32, i32), ShadowError> {
     if line.is_empty() {
-        return Err(ShadowError::InvalidLenLineError);
+        return Err(ShadowError::InvalidLenLine);
     }
 
     let line_parsed: Vec<&str> = line.split_whitespace().collect();
 
     if line_parsed.len() != 2 {
-        return Err(ShadowError::InvalidLenLineError);
+        return Err(ShadowError::InvalidLenLine);
     }
 
     let first: i32 = match line_parsed[0].parse() {
         Ok(value) => value,
-        Err(_) => return Err(ShadowError::ParseIntError),
+        Err(_) => return Err(ShadowError::ParseInt),
     };
 
     let second: i32 = match line_parsed[1].parse() {
         Ok(value) => value,
-        Err(_) => return Err(ShadowError::ParseIntError),
+        Err(_) => return Err(ShadowError::ParseInt),
     };
 
     Ok((first, second))
@@ -37,8 +37,8 @@ pub fn read_input() -> Result<Data, ShadowError> {
     // Read first line: theta and N
     let (theta, num_flatlanders) = match lines.next() {
         Some(Ok(line)) => read_line(&line)?,
-        Some(Err(_)) => return Err(ShadowError::ReadLineError),
-        None => return Err(ShadowError::InvalidLenLineError),
+        Some(Err(_)) => return Err(ShadowError::ReadLine),
+        None => return Err(ShadowError::InvalidLenLine),
     };
 
     data.set_degrees(theta)?;
@@ -47,9 +47,9 @@ pub fn read_input() -> Result<Data, ShadowError> {
     for i in 0..num_flatlanders {
         let (x, h) = match lines.next() {
             Some(Ok(line)) => read_line(&line)?,
-            Some(Err(_)) => return Err(ShadowError::ReadLineError),
+            Some(Err(_)) => return Err(ShadowError::ReadLine),
             None => {
-                return Err(ShadowError::InvalidNumFlatlandersError {
+                return Err(ShadowError::InvalidNumFlatlanders {
                     value_expected: num_flatlanders,
                     value_got: i,
                 });
@@ -79,7 +79,7 @@ fn test_read_line_empty() {
     match read_line(line) {
         Ok(_) => assert!(false, "Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidLenLineError => assert!(true),
+            ShadowError::InvalidLenLine => assert!(true),
             _ => assert!(false, "Incorrect error type"),
         },
     }
@@ -91,7 +91,7 @@ fn test_read_line_invalid_len_greater() {
     match read_line(line) {
         Ok(_) => assert!(false, "Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidLenLineError => assert!(true),
+            ShadowError::InvalidLenLine => assert!(true),
             _ => assert!(false, "Incorrect error type"),
         },
     }
@@ -103,7 +103,7 @@ fn test_read_line_invalid_len_less() {
     match read_line(line) {
         Ok(_) => assert!(false, "Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidLenLineError => assert!(true),
+            ShadowError::InvalidLenLine => assert!(true),
             _ => assert!(false, "Incorrect error type"),
         },
     }
@@ -115,7 +115,7 @@ fn test_read_line_parse_int_error_first() {
     match read_line(line) {
         Ok(_) => assert!(false, "Should have returned an error"),
         Err(e) => match e {
-            ShadowError::ParseIntError => assert!(true),
+            ShadowError::ParseInt => assert!(true),
             _ => assert!(false, "Incorrect error type"),
         },
     }
@@ -127,7 +127,7 @@ fn test_read_line_parse_int_error_second() {
     match read_line(line) {
         Ok(_) => assert!(false, "Should have returned an error"),
         Err(e) => match e {
-            ShadowError::ParseIntError => assert!(true),
+            ShadowError::ParseInt => assert!(true),
             _ => assert!(false, "Incorrect error type"),
         },
     }

@@ -20,8 +20,8 @@ impl Data {
 
     /// Sets the angle in degrees. Returns error if out of range.
     pub fn set_degrees(&mut self, theta: i32) -> Result<(), ShadowError> {
-        if theta < 10 || theta > 80 {
-            return Err(ShadowError::InvalidAngleError { value: theta });
+        if !(10..=80).contains(&theta) {
+            return Err(ShadowError::InvalidAngle { value: theta });
         }
 
         self.theta = theta;
@@ -113,7 +113,7 @@ fn test_set_degrees_error_less_than_10() {
     match data.set_degrees(theta) {
         Ok(_) => assert!(false, "Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidAngleError { value } => assert_eq!(value, theta),
+            ShadowError::InvalidAngle { value } => assert_eq!(value, theta),
             _ => assert!(false, "Incorrect error type"),
         },
     }
@@ -126,7 +126,7 @@ fn test_set_degrees_error_greater_than_80() {
     match data.set_degrees(theta) {
         Ok(_) => assert!(false, "Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidAngleError { value } => assert_eq!(value, theta),
+            ShadowError::InvalidAngle { value } => assert_eq!(value, theta),
             _ => assert!(false, "Incorrect error type"),
         },
     }
@@ -164,7 +164,7 @@ fn test_set_flatlander_error() {
     match data.set_flatlander(x, h) {
         Ok(_) => assert!(false, "Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidPositionOrHeightError { value } => assert_eq!(value, x),
+            ShadowError::InvalidPositionOrHeight { value } => assert_eq!(value, x),
             _ => assert!(false, "Incorrect error type"),
         },
     }

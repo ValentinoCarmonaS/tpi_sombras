@@ -1,31 +1,31 @@
 /// Represents all possible errors in the shadow calculation program.
 #[derive(Debug)]
 pub enum ShadowError {
-    InvalidAngleError { value: i32 },
-    ReadLineError,
-    ParseIntError,
-    InvalidLenLineError,
-    InvalidNumFlatlandersError { value_expected: i32, value_got: i32 },
-    InvalidPositionOrHeightError { value: i32 },
+    InvalidAngle { value: i32 },
+    ReadLine,
+    ParseInt,
+    InvalidLenLine,
+    InvalidNumFlatlanders { value_expected: i32, value_got: i32 },
+    InvalidPositionOrHeight { value: i32 },
 }
 
 impl ShadowError {
     /// Prints the error message to stderr.
     pub fn show_error(&self) {
         match self {
-            Self::InvalidPositionOrHeightError { value } => {
+            Self::InvalidPositionOrHeight { value } => {
                 eprintln!("Invalid position or height: {}", value)
             }
-            Self::InvalidAngleError { value } => {
+            Self::InvalidAngle { value } => {
                 eprintln!("Invalid angle: {}", value)
             }
-            Self::InvalidLenLineError => {
+            Self::InvalidLenLine => {
                 eprintln!("Invalid length line, the lenght is not 2")
             }
-            Self::ParseIntError => {
+            Self::ParseInt => {
                 eprintln!("Error in parse int")
             }
-            Self::InvalidNumFlatlandersError {
+            Self::InvalidNumFlatlanders {
                 value_expected,
                 value_got,
             } => {
@@ -34,7 +34,7 @@ impl ShadowError {
                     value_expected, value_got
                 )
             }
-            Self::ReadLineError => {
+            Self::ReadLine => {
                 eprintln!("Error in read line")
             }
         }

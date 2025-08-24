@@ -10,10 +10,10 @@ pub struct Flatlander {
 impl Flatlander {
     /// Creates a new Flatlander. Returns error if values are invalid.
     pub fn new(x: i32, h: i32) -> Result<Self, ShadowError> {
-        if x < 0 || x > 310000 {
-            return Err(ShadowError::InvalidPositionOrHeightError { value: x });
-        } else if h < 1 || h > 1000 {
-            return Err(ShadowError::InvalidPositionOrHeightError { value: h });
+        if !(0..=300000).contains(&x) {
+            return Err(ShadowError::InvalidPositionOrHeight { value: x });
+        } else if !(1..=1000).contains(&h) {
+            return Err(ShadowError::InvalidPositionOrHeight { value: h });
         }
 
         Ok(Self { x, h })
@@ -139,21 +139,21 @@ fn test_new_invalid_x_less_than_0() {
     match Flatlander::new(x, h) {
         Ok(_) => assert!(false, "Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidPositionOrHeightError { value } => assert_eq!(value, x),
+            ShadowError::InvalidPositionOrHeight { value } => assert_eq!(value, x),
             _ => assert!(false, "Incorrect error type"),
         },
     }
 }
 
 #[test]
-fn test_new_invalid_x_greater_than_310000() {
-    let x = 310001;
+fn test_new_invalid_x_greater_than_300000() {
+    let x = 300001;
     let h = 10;
 
     match Flatlander::new(x, h) {
         Ok(_) => assert!(false, "Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidPositionOrHeightError { value } => assert_eq!(value, x),
+            ShadowError::InvalidPositionOrHeight { value } => assert_eq!(value, x),
             _ => assert!(false, "Incorrect error type"),
         },
     }
@@ -167,7 +167,7 @@ fn test_new_invalid_h_less_than_1() {
     match Flatlander::new(x, h) {
         Ok(_) => assert!(false, "Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidPositionOrHeightError { value } => assert_eq!(value, h),
+            ShadowError::InvalidPositionOrHeight { value } => assert_eq!(value, h),
             _ => assert!(false, "Incorrect error type"),
         },
     }
@@ -181,7 +181,7 @@ fn test_new_invalid_h_greater_than_1000() {
     match Flatlander::new(x, h) {
         Ok(_) => assert!(false, "Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidPositionOrHeightError { value } => assert_eq!(value, h),
+            ShadowError::InvalidPositionOrHeight { value } => assert_eq!(value, h),
             _ => assert!(false, "Incorrect error type"),
         },
     }
