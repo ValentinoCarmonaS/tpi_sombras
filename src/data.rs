@@ -2,6 +2,7 @@ use std::f64::consts::PI;
 
 use crate::{flatlander::Flatlander, shadow_error::ShadowError};
 
+/// Stores the input data: angle and flatlanders.
 #[derive(Debug)]
 pub struct Data {
     theta: i32,
@@ -9,6 +10,7 @@ pub struct Data {
 }
 
 impl Data {
+    /// Creates a new Data struct with default values.
     pub fn new() -> Self {
         Self {
             theta: 0,
@@ -16,6 +18,7 @@ impl Data {
         }
     }
 
+    /// Sets the angle in degrees. Returns error if out of range.
     pub fn set_degrees(&mut self, theta: i32) -> Result<(), ShadowError> {
         if theta < 10 || theta > 80 {
             return Err(ShadowError::InvalidAngleError { value: theta });
@@ -25,6 +28,7 @@ impl Data {
         Ok(())
     }
 
+    /// Adds a flatlander to the list. Returns error if invalid.
     pub fn set_flatlander(&mut self, x: i32, h: i32) -> Result<(), ShadowError> {
         let flatlander = Flatlander::new(x, h)?;
         self.flatlanders.push(flatlander);
@@ -32,12 +36,13 @@ impl Data {
         Ok(())
     }
 
+    /// Sorts the flatlanders by their x position.
     pub fn sort(&mut self) {
-        // Sort the flatlander by x
         self.flatlanders
             .sort_by_key(|flatlander| flatlander.get_x());
     }
 
+    /// Calculates the total shadow length for all flatlanders.
     pub fn calculate_total_shadow_length(self) -> f64 {
         let theta_rad = (self.theta as f64) * PI / 180.0;
         let tan = theta_rad.tan();
@@ -64,11 +69,13 @@ impl Data {
         ans + current_end - current_start
     }
 
+    /// Returns the angle in degrees.
     #[allow(dead_code)]
     pub fn get_theta(&self) -> i32 {
         self.theta
     }
 
+    /// Returns a reference to the flatlanders vector.
     #[allow(dead_code)]
     pub fn get_flatlanders(&self) -> &Vec<Flatlander> {
         &self.flatlanders

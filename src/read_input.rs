@@ -1,6 +1,8 @@
 use crate::{data::Data, shadow_error::ShadowError};
 use std::io::{self, BufRead};
 
+/// Parses a line into a tuple of two i32 values.
+/// Returns error if the line is invalid or cannot be parsed.
 pub fn read_line(line: &str) -> Result<(i32, i32), ShadowError> {
     if line.is_empty() {
         return Err(ShadowError::InvalidLenLineError);
@@ -25,13 +27,14 @@ pub fn read_line(line: &str) -> Result<(i32, i32), ShadowError> {
     Ok((first, second))
 }
 
+/// Reads all input from stdin and returns a Data struct.
+/// Returns error if the input is invalid.
 pub fn read_input() -> Result<Data, ShadowError> {
     let stdin = io::stdin();
     let mut lines = stdin.lock().lines();
-
     let mut data = Data::new();
 
-    // Leer primera línea: theta N
+    // Read first line: theta and N
     let (theta, num_flatlanders) = match lines.next() {
         Some(Ok(line)) => read_line(&line)?,
         Some(Err(_)) => return Err(ShadowError::ReadLineError),
@@ -40,7 +43,7 @@ pub fn read_input() -> Result<Data, ShadowError> {
 
     data.set_degrees(theta)?;
 
-    // Leer exactamente N líneas de flatlanders
+    // Read exactly N lines of the flatlanders
     for i in 0..num_flatlanders {
         let (x, h) = match lines.next() {
             Some(Ok(line)) => read_line(&line)?,
@@ -55,7 +58,6 @@ pub fn read_input() -> Result<Data, ShadowError> {
 
         data.set_flatlander(x, h)?;
     }
-
     Ok(data)
 }
 

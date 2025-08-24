@@ -1,5 +1,6 @@
 use crate::shadow_error::ShadowError;
 
+/// Represents a flatlander with position and height.
 #[derive(Debug)]
 pub struct Flatlander {
     x: i32,
@@ -7,6 +8,7 @@ pub struct Flatlander {
 }
 
 impl Flatlander {
+    /// Creates a new Flatlander. Returns error if values are invalid.
     pub fn new(x: i32, h: i32) -> Result<Self, ShadowError> {
         if x < 0 || x > 310000 {
             return Err(ShadowError::InvalidPositionOrHeightError { value: x });
@@ -17,15 +19,18 @@ impl Flatlander {
         Ok(Self { x, h })
     }
 
+    /// Calculates the shadow length for this flatlander given tan(theta).
     pub fn calculate_shadow_length(&self, tan: f64) -> f64 {
         (self.h as f64) / tan
     }
 
+    /// Returns the x position.
     #[allow(dead_code)]
     pub fn get_x(&self) -> i32 {
         self.x
     }
 
+    /// Returns the height.
     #[allow(dead_code)]
     pub fn get_h(&self) -> i32 {
         self.h

@@ -1,25 +1,16 @@
+/// Represents all possible errors in the shadow calculation program.
 #[derive(Debug)]
 pub enum ShadowError {
-    // el angulo es incorrecto !!!
     InvalidAngleError { value: i32 },
-
-    // error en la lectura de stdin
     ReadLineError,
-
-    // error en el parseo de str a int
     ParseIntError,
-
-    // la linea actual tiene >< a 2 elementos
     InvalidLenLineError,
-
-    // no hay la cantidad de flatlanders que se indican
     InvalidNumFlatlandersError { value_expected: i32, value_got: i32 },
-
-    // Error en flatlander
     InvalidPositionOrHeightError { value: i32 },
 }
 
 impl ShadowError {
+    /// Prints the error message to stderr.
     pub fn show_error(&self) {
         match self {
             Self::InvalidPositionOrHeightError { value } => {
