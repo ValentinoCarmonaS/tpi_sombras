@@ -4,6 +4,9 @@ pub enum ShadowError {
     InvalidAngleError { value: i32 },
 
     // error en la lectura de stdin
+    ReadLineError,
+
+    // error en el parseo de str a int
     ParseIntError,
 
     // la linea actual tiene >< a 2 elementos
@@ -34,6 +37,9 @@ impl ShadowError {
             }
             Self::InvalidNumFlatlandersError { value_expected, value_got } => {
                 eprintln!("Invalid number of flatlanders, expected {} but got: {}", value_expected, value_got)
+            }
+            Self::ReadLineError => {
+                eprintln!("Error in read line")
             }
         }
     }
