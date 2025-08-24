@@ -56,3 +56,75 @@ pub fn read_input() -> Result<Data, ShadowError> {
 
     Ok(data)
 }
+
+#[test]
+fn test_read_line_success() {
+    let line = "10 20";
+    match read_line(line) {
+        Ok((first, second)) => {
+            assert_eq!(first, 10);
+            assert_eq!(second, 20);
+        }
+        Err(_) => assert!(false, "Should not have returned an error"),
+    }
+}
+
+#[test]
+fn test_read_line_empty() {
+    let line = "";
+    match read_line(line) {
+        Ok(_) => assert!(false, "Should have returned an error"),
+        Err(e) => match e {
+            ShadowError::InvalidLenLineError => assert!(true),
+            _ => assert!(false, "Incorrect error type"),
+        },
+    }
+}
+
+#[test]
+fn test_read_line_invalid_len_greater() {
+    let line = "10 20 30";
+    match read_line(line) {
+        Ok(_) => assert!(false, "Should have returned an error"),
+        Err(e) => match e {
+            ShadowError::InvalidLenLineError => assert!(true),
+            _ => assert!(false, "Incorrect error type"),
+        },
+    }
+}
+
+#[test]
+fn test_read_line_invalid_len_less() {
+    let line = "10";
+    match read_line(line) {
+        Ok(_) => assert!(false, "Should have returned an error"),
+        Err(e) => match e {
+            ShadowError::InvalidLenLineError => assert!(true),
+            _ => assert!(false, "Incorrect error type"),
+        },
+    }
+}
+
+#[test]
+fn test_read_line_parse_int_error_first() {
+    let line = "a 20";
+    match read_line(line) {
+        Ok(_) => assert!(false, "Should have returned an error"),
+        Err(e) => match e {
+            ShadowError::ParseIntError => assert!(true),
+            _ => assert!(false, "Incorrect error type"),
+        },
+    }
+}
+
+#[test]
+fn test_read_line_parse_int_error_second() {
+    let line = "10 b";
+    match read_line(line) {
+        Ok(_) => assert!(false, "Should have returned an error"),
+        Err(e) => match e {
+            ShadowError::ParseIntError => assert!(true),
+            _ => assert!(false, "Incorrect error type"),
+        },
+    }
+}
