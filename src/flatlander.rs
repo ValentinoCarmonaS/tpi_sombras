@@ -1,4 +1,4 @@
-use crate::{shadow_error::ShadowError};
+use crate::shadow_error::ShadowError;
 
 #[derive(Debug)]
 pub struct Flatlander {

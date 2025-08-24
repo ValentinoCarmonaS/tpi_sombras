@@ -1,8 +1,8 @@
-mod shadow_error;
-mod read_input;
-mod run;
 mod data;
 mod flatlander;
+mod read_input;
+mod run;
+mod shadow_error;
 
 use run::run;
 

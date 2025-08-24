@@ -17,7 +17,6 @@ pub enum ShadowError {
 
     // Error en flatlander
     InvalidPositionOrHeightError { value: i32 },
-
 }
 
 impl ShadowError {
@@ -35,8 +34,14 @@ impl ShadowError {
             Self::ParseIntError => {
                 eprintln!("Error in parse int")
             }
-            Self::InvalidNumFlatlandersError { value_expected, value_got } => {
-                eprintln!("Invalid number of flatlanders, expected {} but got: {}", value_expected, value_got)
+            Self::InvalidNumFlatlandersError {
+                value_expected,
+                value_got,
+            } => {
+                eprintln!(
+                    "Invalid number of flatlanders, expected {} but got: {}",
+                    value_expected, value_got
+                )
             }
             Self::ReadLineError => {
                 eprintln!("Error in read line")

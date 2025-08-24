@@ -1,6 +1,5 @@
-use crate::shadow_error::ShadowError;
 use crate::read_input::read_input;
-
+use crate::shadow_error::ShadowError;
 
 pub fn run() -> Result<f64, ShadowError> {
     // Read the input from stdin

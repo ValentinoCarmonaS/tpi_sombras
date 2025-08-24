@@ -45,10 +45,12 @@ pub fn read_input() -> Result<Data, ShadowError> {
         let (x, h) = match lines.next() {
             Some(Ok(line)) => read_line(&line)?,
             Some(Err(_)) => return Err(ShadowError::ReadLineError),
-            None => return Err(ShadowError::InvalidNumFlatlandersError {
-                value_expected: num_flatlanders,
-                value_got: i,
-            }),
+            None => {
+                return Err(ShadowError::InvalidNumFlatlandersError {
+                    value_expected: num_flatlanders,
+                    value_got: i,
+                });
+            }
         };
 
         data.set_flatlander(x, h)?;
