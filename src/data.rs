@@ -43,7 +43,7 @@ impl Data {
     }
 
     /// Calculates the total shadow length for all flatlanders.
-    pub fn calculate_total_shadow_length(self) -> f64 {
+    pub fn calculate_total_shadow_length(&self) -> f64 {
         let theta_rad = (self.theta as f64) * PI / 180.0;
         let tan = theta_rad.tan();
 
@@ -51,7 +51,7 @@ impl Data {
         let mut current_start = -1.0;
         let mut current_end = -1.0;
 
-        for flatlander in self.flatlanders {
+        for flatlander in &self.flatlanders {
             let x = flatlander.get_x() as f64;
             let l = x + flatlander.calculate_shadow_length(tan);
 
