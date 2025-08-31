@@ -27,6 +27,7 @@ pub fn parse_line(line: &str) -> Result<(i32, i32), ShadowError> {
     Ok((first, second))
 }
 
+/// Reads a line from stdin and returns a tuple of two i32 values.
 fn read_line(lines: &mut dyn Iterator<Item = io::Result<String>>) -> Result<(i32, i32), ShadowError> {
     let (theta, num_flatlanders) = match lines.next() {
         Some(Ok(line)) => parse_line(&line)?,
@@ -67,7 +68,7 @@ fn test_read_line_success() {
             assert_eq!(first, 10);
             assert_eq!(second, 20);
         }
-        Err(_) => assert!(false, "Should not have returned an error"),
+        Err(_) => panic!("Should not have returned an error"),
     }
 }
 
@@ -75,10 +76,10 @@ fn test_read_line_success() {
 fn test_read_line_empty() {
     let line = "";
     match parse_line(line) {
-        Ok(_) => assert!(false, "Should have returned an error"),
+        Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidLenLine => assert!(true),
-            _ => assert!(false, "Incorrect error type"),
+            ShadowError::InvalidLenLine => (),
+            _ => panic!("Incorrect error type"),
         },
     }
 }
@@ -87,10 +88,10 @@ fn test_read_line_empty() {
 fn test_read_line_invalid_len_greater() {
     let line = "10 20 30";
     match parse_line(line) {
-        Ok(_) => assert!(false, "Should have returned an error"),
+        Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidLenLine => assert!(true),
-            _ => assert!(false, "Incorrect error type"),
+            ShadowError::InvalidLenLine => (),
+            _ => panic!("Incorrect error type"),
         },
     }
 }
@@ -99,10 +100,10 @@ fn test_read_line_invalid_len_greater() {
 fn test_read_line_invalid_len_less() {
     let line = "10";
     match parse_line(line) {
-        Ok(_) => assert!(false, "Should have returned an error"),
+        Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidLenLine => assert!(true),
-            _ => assert!(false, "Incorrect error type"),
+            ShadowError::InvalidLenLine => (),
+            _ => panic!("Incorrect error type"),
         },
     }
 }
@@ -111,10 +112,10 @@ fn test_read_line_invalid_len_less() {
 fn test_read_line_parse_int_error_first() {
     let line = "a 20";
     match parse_line(line) {
-        Ok(_) => assert!(false, "Should have returned an error"),
+        Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
-            ShadowError::ParseInt => assert!(true),
-            _ => assert!(false, "Incorrect error type"),
+            ShadowError::ParseInt => (),
+            _ => panic!("Incorrect error type"),
         },
     }
 }
@@ -123,10 +124,10 @@ fn test_read_line_parse_int_error_first() {
 fn test_read_line_parse_int_error_second() {
     let line = "10 b";
     match parse_line(line) {
-        Ok(_) => assert!(false, "Should have returned an error"),
+        Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
-            ShadowError::ParseInt => assert!(true),
-            _ => assert!(false, "Incorrect error type"),
+            ShadowError::ParseInt => (),
+            _ => panic!("Incorrect error type"),
         },
     }
 }

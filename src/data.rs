@@ -94,10 +94,7 @@ fn test_set_degrees() {
     let mut data = Data::new();
     let theta = 45;
 
-    match data.set_degrees(theta) {
-        Ok(_) => (),
-        Err(_) => return assert!(false, "Error in set degrees"),
-    }
+    data.set_degrees(theta).unwrap();
 
     assert_eq!(
         data.get_theta(),
@@ -111,10 +108,10 @@ fn test_set_degrees_error_less_than_10() {
     let mut data = Data::new();
     let theta = 9;
     match data.set_degrees(theta) {
-        Ok(_) => assert!(false, "Should have returned an error"),
+        Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
             ShadowError::InvalidAngle { value } => assert_eq!(value, theta),
-            _ => assert!(false, "Incorrect error type"),
+            _ => panic!("Incorrect error type"),
         },
     }
 }
@@ -124,10 +121,10 @@ fn test_set_degrees_error_greater_than_80() {
     let mut data = Data::new();
     let theta = 81;
     match data.set_degrees(theta) {
-        Ok(_) => assert!(false, "Should have returned an error"),
+        Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
             ShadowError::InvalidAngle { value } => assert_eq!(value, theta),
-            _ => assert!(false, "Incorrect error type"),
+            _ => panic!("Incorrect error type"),
         },
     }
 }
@@ -140,7 +137,7 @@ fn test_set_flatlander() {
 
     match data.set_flatlander(x, h) {
         Ok(_) => (),
-        Err(_) => return assert!(false, "Error in set flatlander"),
+        Err(_) => panic!("Error in set flatlander"),
     }
 
     assert_eq!(
@@ -162,10 +159,10 @@ fn test_set_flatlander_error() {
     let h = 10;
 
     match data.set_flatlander(x, h) {
-        Ok(_) => assert!(false, "Should have returned an error"),
+        Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
             ShadowError::InvalidPositionOrHeight { value } => assert_eq!(value, x),
-            _ => assert!(false, "Incorrect error type"),
+            _ => panic!("Incorrect error type"),
         },
     }
 }
@@ -173,14 +170,14 @@ fn test_set_flatlander_error() {
 #[test]
 fn test_sort() {
     let mut data = Data::new();
-    if let Err(_) = data.set_flatlander(10, 10) {
-        assert!(false, "Should not fail")
+    if data.set_flatlander(10, 10).is_err() {
+        panic!("Should not fail")
     }
-    if let Err(_) = data.set_flatlander(0, 10) {
-        assert!(false, "Should not fail")
+    if data.set_flatlander(0, 10).is_err() {
+        panic!("Should not fail")
     }
-    if let Err(_) = data.set_flatlander(5, 10) {
-        assert!(false, "Should not fail")
+    if data.set_flatlander(5, 10).is_err() {
+        panic!("Should not fail")
     }
 
     data.sort();
@@ -193,8 +190,8 @@ fn test_sort() {
 #[test]
 fn test_get_flatlanders() {
     let mut data = Data::new();
-    if let Err(_) = data.set_flatlander(10, 10) {
-        assert!(false, "Should not fail")
+    if data.set_flatlander(10, 10).is_err() {
+        panic!("Should not fail")
     }
     assert_eq!(data.get_flatlanders().len(), 1);
 }
@@ -216,11 +213,11 @@ fn test_calculate_total_shadow_length_no_flatlanders() {
 #[test]
 fn test_calculate_total_shadow_length_one_flatlander() {
     let mut data = Data::new();
-    if let Err(_) = data.set_degrees(45) {
-        assert!(false, "Should not fail")
+    if data.set_degrees(45).is_err() {
+        panic!("Should not fail")
     }
-    if let Err(_) = data.set_flatlander(0, 10) {
-        assert!(false, "Should not fail")
+    if data.set_flatlander(0, 10).is_err() {
+        panic!("Should not fail")
     }
 
     let epsilon = 1e-4;
@@ -237,14 +234,14 @@ fn test_calculate_total_shadow_length_one_flatlander() {
 #[test]
 fn test01_calculate_total_shadow_length() {
     let mut data = Data::new();
-    if let Err(_) = data.set_degrees(45) {
-        assert!(false, "Should not fail")
+    if data.set_degrees(45).is_err() {
+        panic!("Should not fail")
     }
-    if let Err(_) = data.set_flatlander(0, 10) {
-        assert!(false, "Should not fail")
+    if data.set_flatlander(0, 10).is_err() {
+        panic!("Should not fail")
     }
-    if let Err(_) = data.set_flatlander(5, 10) {
-        assert!(false, "Should not fail")
+    if data.set_flatlander(5, 10).is_err() {
+        panic!("Should not fail")
     }
 
     data.sort();
@@ -263,17 +260,17 @@ fn test01_calculate_total_shadow_length() {
 #[test]
 fn test02_calculate_total_shadow_length() {
     let mut data = Data::new();
-    if let Err(_) = data.set_degrees(30) {
-        assert!(false, "Should not fail")
+    if data.set_degrees(30).is_err() {
+        panic!("Should not fail")
     }
-    if let Err(_) = data.set_flatlander(0, 100) {
-        assert!(false, "Should not fail")
+    if data.set_flatlander(0, 100).is_err() {
+        panic!("Should not fail")
     }
-    if let Err(_) = data.set_flatlander(50, 150) {
-        assert!(false, "Should not fail")
+    if data.set_flatlander(50, 150).is_err() {
+        panic!("Should not fail")
     }
-    if let Err(_) = data.set_flatlander(100, 200) {
-        assert!(false, "Should not fail")
+    if data.set_flatlander(100, 200).is_err() {
+        panic!("Should not fail")
     }
 
     data.sort();
@@ -292,17 +289,17 @@ fn test02_calculate_total_shadow_length() {
 #[test]
 fn test03_calculate_total_shadow_length() {
     let mut data = Data::new();
-    if let Err(_) = data.set_degrees(45) {
-        assert!(false, "Should not fail")
+    if data.set_degrees(45).is_err() {
+        panic!("Should not fail")
     }
-    if let Err(_) = data.set_flatlander(0, 100) {
-        assert!(false, "Should not fail")
+    if data.set_flatlander(0, 100).is_err() {
+        panic!("Should not fail")
     }
-    if let Err(_) = data.set_flatlander(50, 150) {
-        assert!(false, "Should not fail")
+    if data.set_flatlander(50, 150).is_err() {
+        panic!("Should not fail")
     }
-    if let Err(_) = data.set_flatlander(100, 200) {
-        assert!(false, "Should not fail")
+    if data.set_flatlander(100, 200).is_err() {
+        panic!("Should not fail")
     }
 
     data.sort();
