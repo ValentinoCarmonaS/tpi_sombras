@@ -21,7 +21,7 @@ impl Data {
     /// Sets the angle in degrees. Returns error if out of range.
     pub fn set_degrees(&mut self, theta: i32) -> Result<(), ShadowError> {
         if !(10..=80).contains(&theta) {
-            return Err(ShadowError::InvalidAngle { value: theta });
+            return Err(ShadowError::FueraDeRango);
         }
 
         self.theta = theta;
@@ -30,6 +30,9 @@ impl Data {
 
     /// Adds a flatlander to the list. Returns error if invalid.
     pub fn set_flatlander(&mut self, x: i32, h: i32) -> Result<(), ShadowError> {
+        if !(0..=300000).contains(&x) || !(1..=1000).contains(&h) {
+            return Err(ShadowError::FueraDeRango);
+        }
         let flatlander = Flatlander::new(x, h)?;
         self.flatlanders.push(flatlander);
 
@@ -110,7 +113,7 @@ fn test_set_degrees_error_less_than_10() {
     match data.set_degrees(theta) {
         Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidAngle { value } => assert_eq!(value, theta),
+            ShadowError::FueraDeRango => (),
             _ => panic!("Incorrect error type"),
         },
     }
@@ -123,7 +126,7 @@ fn test_set_degrees_error_greater_than_80() {
     match data.set_degrees(theta) {
         Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidAngle { value } => assert_eq!(value, theta),
+            ShadowError::FueraDeRango => (),
             _ => panic!("Incorrect error type"),
         },
     }
@@ -161,7 +164,7 @@ fn test_set_flatlander_error() {
     match data.set_flatlander(x, h) {
         Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidPositionOrHeight { value } => assert_eq!(value, x),
+            ShadowError::FueraDeRango => (),
             _ => panic!("Incorrect error type"),
         },
     }

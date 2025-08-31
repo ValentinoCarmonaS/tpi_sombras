@@ -10,12 +10,9 @@ pub struct Flatlander {
 impl Flatlander {
     /// Creates a new Flatlander. Returns error if values are invalid.
     pub fn new(x: i32, h: i32) -> Result<Self, ShadowError> {
-        if !(0..=300000).contains(&x) {
-            return Err(ShadowError::InvalidPositionOrHeight { value: x });
-        } else if !(1..=1000).contains(&h) {
-            return Err(ShadowError::InvalidPositionOrHeight { value: h });
+        if !(0..=300000).contains(&x) || !(1..=1000).contains(&h) {
+            return Err(ShadowError::FueraDeRango);
         }
-
         Ok(Self { x, h })
     }
 
@@ -139,7 +136,7 @@ fn test_new_invalid_x_less_than_0() {
     match Flatlander::new(x, h) {
         Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidPositionOrHeight { value } => assert_eq!(value, x),
+            ShadowError::FueraDeRango => (),
             _ => panic!("Incorrect error type"),
         },
     }
@@ -153,7 +150,7 @@ fn test_new_invalid_x_greater_than_300000() {
     match Flatlander::new(x, h) {
         Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidPositionOrHeight { value } => assert_eq!(value, x),
+            ShadowError::FueraDeRango => (),
             _ => panic!("Incorrect error type"),
         },
     }
@@ -167,7 +164,7 @@ fn test_new_invalid_h_less_than_1() {
     match Flatlander::new(x, h) {
         Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidPositionOrHeight { value } => assert_eq!(value, h),
+            ShadowError::FueraDeRango => (),
             _ => panic!("Incorrect error type"),
         },
     }
@@ -181,7 +178,7 @@ fn test_new_invalid_h_greater_than_1000() {
     match Flatlander::new(x, h) {
         Ok(_) => panic!("Should have returned an error"),
         Err(e) => match e {
-            ShadowError::InvalidPositionOrHeight { value } => assert_eq!(value, h),
+            ShadowError::FueraDeRango => (),
             _ => panic!("Incorrect error type"),
         },
     }
