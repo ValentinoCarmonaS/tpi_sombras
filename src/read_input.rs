@@ -28,7 +28,9 @@ pub fn parse_line(line: &str) -> Result<(i32, i32), ShadowError> {
 }
 
 /// Reads a line from stdin and returns a tuple of two i32 values.
-fn read_line(lines: &mut dyn Iterator<Item = io::Result<String>>) -> Result<(i32, i32), ShadowError> {
+fn read_line(
+    lines: &mut dyn Iterator<Item = io::Result<String>>,
+) -> Result<(i32, i32), ShadowError> {
     let (theta, num_flatlanders) = match lines.next() {
         Some(Ok(line)) => parse_line(&line)?,
         Some(Err(_)) => return Err(ShadowError::ReadLine),
