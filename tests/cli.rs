@@ -1,33 +1,71 @@
-use assert_cmd::prelude::*; // add methods on commands
-use predicates::prelude::*; // used for writing assertions
-use std::{fs::File, process::Command}; // run programs
+use std::process::{Command, ExitStatus};
+use std::{fs::File};
 
-#[test]
-fn test01() -> Result<(), Box<dyn std::error::Error>> {
-    let mut cmd = Command::cargo_bin("tpi_sombras")?;
-    cmd.stdin(File::open("./tests/test01.txt")?);
-    cmd.assert()
-        .success()
-        .stdout(predicate::str::contains("15.000000000000"));
-    Ok(())
+fn run_main_with_input_file(input_path: &str) -> Result<(ExitStatus, String), &str> {
+    let input_file = match File::open(input_path) {
+        Ok(file) => file,
+        Err(_) => return Err("Error in opening input file")
+    };
+    
+    let output = match Command::new("cargo")
+        .arg("run")
+        .arg("--quiet")
+        .stdin(input_file)
+        .output() 
+        {
+            Ok(output) => output,
+            Err(_) => return Err("Error in command execution")
+        };
+
+    let stdout = match String::from_utf8(output.stdout) {
+        Ok(stdout) => stdout,
+        Err(_) => return Err("Error in converting stdout to string")
+    };
+
+    Ok((output.status, stdout))
 }
 
 #[test]
-fn test02() -> Result<(), Box<dyn std::error::Error>> {
-    let mut cmd = Command::cargo_bin("tpi_sombras")?;
-    cmd.stdin(File::open("./tests/test02.txt")?);
-    cmd.assert()
-        .success()
-        .stdout(predicate::str::contains("446.4101615137755"));
-    Ok(())
+fn test01() {
+    let expected = "15.000000000000";
+    match run_main_with_input_file("./tests/test01.txt"){
+        Ok((status, stdout)) => {
+            assert!(status.success(), "The program shuld have succeeded");
+            assert!(
+                stdout.contains(expected),
+                "The stdout doesnt contains the expected value. \nStdout: {}Expected: {}", stdout, expected
+            );
+        }
+        Err(e) => panic!("{}", e)
+    };
 }
 
 #[test]
-fn test03() -> Result<(), Box<dyn std::error::Error>> {
-    let mut cmd = Command::cargo_bin("tpi_sombras")?;
-    cmd.stdin(File::open("./tests/test03.txt")?);
-    cmd.assert()
-        .success()
-        .stdout(predicate::str::contains("300"));
-    Ok(())
+fn test02() {
+    let expected = "446.4101615137755";
+    match run_main_with_input_file("./tests/test02.txt"){
+        Ok((status, stdout)) => {
+            assert!(status.success(), "The program shuld have succeeded");
+            assert!(
+                stdout.contains(expected),
+                "The stdout doesnt contains the expected value. \nStdout: {}Expected: {}", stdout, expected
+            );
+        }
+        Err(e) => panic!("{}", e)
+    };
+}
+
+#[test]
+fn test03() {
+    let expected = "300";
+    match run_main_with_input_file("./tests/test03.txt"){
+        Ok((status, stdout)) => {
+            assert!(status.success(), "The program shuld have succeeded");
+            assert!(
+                stdout.contains(expected),
+                "The stdout doesnt contains the expected value. \nStdout: {}Expected: {}", stdout, expected
+            );
+        }
+        Err(e) => panic!("{}", e)
+    };
 }
